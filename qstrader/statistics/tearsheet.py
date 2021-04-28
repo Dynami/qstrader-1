@@ -73,7 +73,7 @@ class TearsheetStatistics(Statistics):
         ax.yaxis.grid(linestyle=':')
         ax.xaxis.set_major_locator(mdates.YearLocator(1))
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-        ax.xaxis.grid(linestyle=':')
+        #ax.xaxis.grid(linestyle=':')
 
         equity.plot(lw=2, color='green', alpha=0.6, x_compat=False,
                     label='Strategy', ax=ax, **kwargs)
@@ -108,7 +108,7 @@ class TearsheetStatistics(Statistics):
         ax.xaxis.set_tick_params(reset=True)
         ax.xaxis.set_major_locator(mdates.YearLocator(1))
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
-        ax.xaxis.grid(linestyle=':')
+        #ax.xaxis.grid(linestyle=':')
 
         underwater = -100 * drawdown
         underwater.plot(ax=ax, lw=2, kind='area', color='red', alpha=0.3, **kwargs)

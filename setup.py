@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="qstrader",
-    version="0.2.2.ale",
+    version="0.2.3",
     description="QSTrader backtesting simulation engine",
     long_description=long_description,
     long_description_content_type="text/markdown",
