@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setup(
     name="qstrader",
-    version="0.2.2",
+    version="0.2.2.ale",
     description="QSTrader backtesting simulation engine",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -26,9 +26,9 @@ setup(
     include_package_data=True,
     install_requires=[
         "Click==7.1.2",
-        "matplotlib==3.0.3",
-        "numpy==1.18.4",
-        "pandas==1.1.5",
-        "seaborn==0.10.1"
+        "matplotlib>=3.0.3",
+        "numpy>=1.18.4",
+        "pandas>=1.1.5",
+        "seaborn>=0.10.1"
     ]
 )
