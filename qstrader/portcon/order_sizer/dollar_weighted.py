@@ -169,6 +169,9 @@ class DollarWeightedCashBufferedOrderSizer(OrderSizer):
                 )
 
             # TODO: Long only for the time being.
+            if np.isnan(after_cost_dollar_weight):
+                after_cost_dollar_weight = 0.0
+            
             asset_quantity = int(
                 np.floor(after_cost_dollar_weight / asset_price)
             )
