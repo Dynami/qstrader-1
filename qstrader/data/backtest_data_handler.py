@@ -1,5 +1,9 @@
+from qstrader.asset.universe.universe import Universe
 import numpy as np
 
+class DataHandler(object):
+    def __init__(self) -> None:
+        super().__init__()
 
 class BacktestDataHandler(object):
     """
@@ -7,7 +11,7 @@ class BacktestDataHandler(object):
 
     def __init__(
         self,
-        universe,
+        universe:Universe,
         data_sources=None
     ):
         self.universe = universe

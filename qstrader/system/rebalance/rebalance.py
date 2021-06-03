@@ -9,6 +9,8 @@ class Rebalance(object):
 
     __metaclass__ = ABCMeta
 
+    
+
     @abstractmethod
     def output_rebalances(self):
         raise NotImplementedError(

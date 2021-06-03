@@ -1,3 +1,8 @@
+from qstrader.asset.universe.universe import Universe
+from qstrader.broker.broker import Broker
+from qstrader.data.backtest_data_handler import DataHandler
+from qstrader.risk_model.risk_model import RiskModel
+from qstrader.alpha_model.alpha_model import AlphaModel
 from qstrader import settings
 from qstrader.execution.order import Order
 
@@ -35,15 +40,15 @@ class PortfolioConstructionModel(object):
 
     def __init__(
         self,
-        broker,
+        broker:Broker,
         broker_portfolio_id,
-        universe,
+        universe:Universe,
         order_sizer,
         optimiser,
-        alpha_model=None,
-        risk_model=None,
+        alpha_model:AlphaModel=None,
+        risk_model:RiskModel=None,
         cost_model=None,
-        data_handler=None,
+        data_handler:DataHandler=None,
     ):
         self.broker = broker
         self.broker_portfolio_id = broker_portfolio_id
@@ -257,7 +262,7 @@ class PortfolioConstructionModel(object):
         # If an AlphaModel is provided use its suggestions, otherwise
         # create a null weight vector (zero for all Assets).
         if self.alpha_model:
-            weights = self.alpha_model(dt)
+            weights = self.alpha_model(dt, self.universe)
         else:
             weights = self._create_zero_target_weights_vector(dt)
 

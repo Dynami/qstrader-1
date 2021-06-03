@@ -51,7 +51,7 @@ class SimulatedBroker(Broker):
         account_id=None,
         base_currency="USD",
         initial_funds=0.0,
-        fee_model=ZeroFeeModel(),
+        fee_model:FeeModel=ZeroFeeModel(),
         slippage_model=None,
         market_impact_model=None
     ):

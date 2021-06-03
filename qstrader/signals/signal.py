@@ -1,4 +1,6 @@
+import pandas as pd
 from abc import ABCMeta, abstractmethod
+from qstrader.asset.universe.universe import Universe
 
 from qstrader.signals.buffer import AssetPriceBuffers
 
@@ -20,9 +22,9 @@ class Signal(object):
 
     __metaclass__ = ABCMeta
 
-    def __init__(self, start_dt, universe, lookbacks):
+    def __init__(self, start_dt:pd.Timestamp, universe:Universe, lookbacks:int):
         self.start_dt = start_dt
-        self.universe = universe
+        self.universe = universe    
         self.lookbacks = lookbacks
         self.assets = self.universe.get_assets(start_dt)
         self.buffers = self._create_asset_price_buffers()
@@ -40,7 +42,7 @@ class Signal(object):
             self.assets, lookbacks=self.lookbacks
         )
 
-    def append(self, asset, price):
+    def append(self, asset:str, price:float):
         """
         Append a new price onto the price buffer for
         the specific asset provided.
@@ -54,7 +56,7 @@ class Signal(object):
         """
         self.buffers.append(asset, price)
 
-    def update_assets(self, dt):
+    def update_assets(self, dt:pd.Timestamp):
         """
         Ensure that any new additions to the universe also receive
         a price buffer at the point at which they enter.
@@ -72,7 +74,7 @@ class Signal(object):
             self.assets.append(extra_asset)
 
     @abstractmethod
-    def __call__(self, asset, lookback):
+    def __call__(self, asset:str, lookback:int):
         raise NotImplementedError(
             "Should implement __call__()"
         )

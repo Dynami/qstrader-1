@@ -1,3 +1,8 @@
+from qstrader.asset.universe.universe import Universe
+from qstrader.alpha_model.alpha_model import AlphaModel
+from qstrader.risk_model.risk_model import RiskModel
+from qstrader.broker.fee_model.fee_model import FeeModel
+from build.lib.qstrader import data
 import os
 
 import pandas as pd
@@ -66,29 +71,37 @@ class BacktestTradingSession(TradingSession):
 
     def __init__(
         self,
-        start_dt,
-        end_dt,
-        universe,
-        alpha_model,
-        risk_model=None,
-        signals=None,
+        start_dt:pd.Timestamp,
+        end_dt:pd.Timestamp,
+        universe:Universe,
+        alpha_model:AlphaModel,
+        risk_model:RiskModel=None,
+        #signals=None,
         initial_cash=1e6,
         rebalance='weekly',
         account_name=DEFAULT_ACCOUNT_NAME,
         portfolio_id=DEFAULT_PORTFOLIO_ID,
         portfolio_name=DEFAULT_PORTFOLIO_NAME,
-        long_only=False,
-        fee_model=ZeroFeeModel(),
-        burn_in_dt=None,
+        long_only:bool=False,
+        fee_model:FeeModel=ZeroFeeModel(),
+        burn_in_dt:pd.Timestamp=None,
         data_handler=None,
         **kwargs
     ):
+        super(BacktestTradingSession, self).__init__(
+            universe=universe, 
+            alpha_model=alpha_model, 
+            risk_model=risk_model,
+            fee_model=fee_model,
+            exchange=SimulatedExchange(start_dt)
+        )
+
         self.start_dt = start_dt
         self.end_dt = end_dt
-        self.universe = universe
-        self.alpha_model = alpha_model
-        self.risk_model = risk_model
-        self.signals = signals
+        #self.universe = universe
+        #self.alpha_model = alpha_model
+        #self.risk_model = risk_model
+        self.signals = self.alpha_model.signals
         self.initial_cash = initial_cash
         self.rebalance = rebalance
         self.account_name = account_name
@@ -98,7 +111,7 @@ class BacktestTradingSession(TradingSession):
         self.fee_model = fee_model
         self.burn_in_dt = burn_in_dt
 
-        self.exchange = self._create_exchange()
+        #self.exchange = self._create_exchange()
         self.data_handler = self._create_data_handler(data_handler)
         self.broker = self._create_broker()
         self.sim_engine = self._create_simulation_engine()
@@ -136,17 +149,7 @@ class BacktestTradingSession(TradingSession):
         """
         return dt in self.rebalance_schedule
 
-    def _create_exchange(self):
-        """
-        Generates a simulated exchange instance used for
-        market hours and holiday calendar checks.
-
-        Returns
-        -------
-        `SimulatedExchanage`
-            The simulated exchange instance.
-        """
-        return SimulatedExchange(self.start_dt)
+    
 
     def _create_data_handler(self, data_handler):
         """

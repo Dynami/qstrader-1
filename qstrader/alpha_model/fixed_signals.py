@@ -1,3 +1,4 @@
+from qstrader.asset.universe.universe import Universe
 from qstrader.alpha_model.alpha_model import AlphaModel
 
 
@@ -25,8 +26,9 @@ class FixedSignalsAlphaModel(AlphaModel):
         self.signal_weights = signal_weights
         self.universe = universe
         self.data_handler = data_handler
+        self.signals = None
 
-    def __call__(self, dt):
+    def __call__(self, dt, universe:Universe):
         """
         Produce the dictionary of fixed scalar signals for
         each of the Asset instances within the Universe.

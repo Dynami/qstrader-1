@@ -1,4 +1,6 @@
 from abc import ABCMeta, abstractmethod
+from qstrader.asset.universe.universe import Universe
+from qstrader.signals.signals_collection import SignalsCollection
 
 
 class AlphaModel(object):
@@ -18,8 +20,11 @@ class AlphaModel(object):
 
     __metaclass__ = ABCMeta
 
+    def __init__(self, signals:SignalsCollection) -> None:
+        self.signals = signals
+
     @abstractmethod
-    def __call__(self, dt):
+    def __call__(self, dt, universe:Universe):
         raise NotImplementedError(
             "Should implement __call__()"
         )

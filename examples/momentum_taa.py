@@ -5,7 +5,7 @@ import pandas as pd
 import pytz
 
 from qstrader.alpha_model.alpha_model import AlphaModel
-from qstrader.alpha_model.fixed_signals import FixedSignalsAlphaModel
+from qstrader.alpha_model.fixed_signals import 
 from qstrader.asset.equity import Equity
 from qstrader.asset.universe.dynamic import DynamicUniverse
 from qstrader.asset.universe.static import StaticUniverse

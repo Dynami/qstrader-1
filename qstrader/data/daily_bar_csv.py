@@ -6,8 +6,12 @@ import pandas as pd
 import pytz
 from qstrader import settings
 
+class DataSource():
+    def __init__(self) -> None:
+        pass
 
-class CSVDailyBarDataSource(object):
+
+class CSVDailyBarDataSource(DataSource):
     """
     Encapsulates loading, preparation and querying of CSV files of
     daily 'bar' OHLCV data. The CSV files are converted into a intraday
