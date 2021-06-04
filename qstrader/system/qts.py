@@ -1,3 +1,8 @@
+from qstrader.risk_model.risk_model import RiskModel
+from qstrader.broker.broker import Broker
+from qstrader.asset.universe.universe import Universe
+from qstrader.data.backtest_data_handler import DataHandler
+from qstrader.alpha_model.alpha_model import AlphaModel
 from qstrader.execution.execution_handler import (
     ExecutionHandler
 )
@@ -48,15 +53,15 @@ class QuantTradingSystem(object):
 
     def __init__(
         self,
-        universe,
-        broker,
-        broker_portfolio_id,
-        data_handler,
-        alpha_model,
+        universe:Universe,
+        broker:Broker,
+        broker_portfolio_id:str,
+        data_handler:DataHandler,
+        alpha_model:AlphaModel,
         *args,
-        risk_model=None,
-        long_only=False,
-        submit_orders=False,
+        risk_model:RiskModel=None,
+        long_only:bool=False,
+        submit_orders:bool=False,
         **kwargs
     ):
         self.universe = universe

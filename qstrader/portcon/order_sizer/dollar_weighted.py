@@ -1,3 +1,5 @@
+from qstrader.data.backtest_data_handler import DataHandler
+from qstrader.broker.broker import Broker
 import numpy as np
 
 from qstrader.portcon.order_sizer.order_sizer import OrderSizer
@@ -29,10 +31,10 @@ class DollarWeightedCashBufferedOrderSizer(OrderSizer):
 
     def __init__(
         self,
-        broker,
-        broker_portfolio_id,
-        data_handler,
-        cash_buffer_percentage=0.05
+        broker:Broker,
+        broker_portfolio_id:str,
+        data_handler:DataHandler,
+        cash_buffer_percentage:float=0.05
     ):
         self.broker = broker
         self.broker_portfolio_id = broker_portfolio_id

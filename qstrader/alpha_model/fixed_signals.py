@@ -1,3 +1,4 @@
+from qstrader.data.backtest_data_handler import DataHandler
 from qstrader.asset.universe.universe import Universe
 from qstrader.alpha_model.alpha_model import AlphaModel
 
@@ -20,8 +21,8 @@ class FixedSignalsAlphaModel(AlphaModel):
     def __init__(
         self,
         signal_weights,
-        universe=None,
-        data_handler=None
+        universe:Universe=None,
+        data_handler:DataHandler=None
     ):
         self.signal_weights = signal_weights
         self.universe = universe

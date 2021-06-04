@@ -12,7 +12,7 @@ class BacktestDataHandler(object):
     def __init__(
         self,
         universe:Universe,
-        data_sources=None
+        data_sources:DataHandler=None
     ):
         self.universe = universe
         self.data_sources = data_sources

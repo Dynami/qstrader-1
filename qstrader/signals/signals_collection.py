@@ -1,3 +1,6 @@
+from qstrader.data.backtest_data_handler import DataHandler
+
+
 class SignalsCollection(object):
     """
     Provides a mechanism for aggregating all signals
@@ -17,7 +20,7 @@ class SignalsCollection(object):
         The data handler used to obtain pricing.
     """
 
-    def __init__(self, signals, data_handler):
+    def __init__(self, signals, data_handler:DataHandler):
         self.signals = signals
         self.data_handler = data_handler
         self.warmup = 0  # Used for 'burn in'

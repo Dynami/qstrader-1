@@ -1,3 +1,4 @@
+from qstrader.data.backtest_data_handler import DataHandler
 from qstrader.portcon.optimiser.optimiser import PortfolioOptimiser
 
 
@@ -16,7 +17,7 @@ class FixedWeightPortfolioOptimiser(PortfolioOptimiser):
 
     def __init__(
         self,
-        data_handler=None
+        data_handler:DataHandler=None
     ):
         self.data_handler = data_handler
 
