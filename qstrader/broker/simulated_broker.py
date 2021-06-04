@@ -1,7 +1,9 @@
+from qstrader.exchange.exchange import Exchange
+from qstrader.data.backtest_data_handler import DataHandler
 import queue
 
 import numpy as np
-
+import pandas as pd
 from qstrader import settings
 from qstrader.broker.broker import Broker
 from qstrader.broker.fee_model.fee_model import FeeModel
@@ -45,12 +47,12 @@ class SimulatedBroker(Broker):
 
     def __init__(
         self,
-        start_dt,
-        exchange,
-        data_handler,
-        account_id=None,
-        base_currency="USD",
-        initial_funds=0.0,
+        start_dt:pd.Timestamp,
+        exchange:Exchange,
+        data_handler:DataHandler,
+        account_id:str=None,
+        base_currency:str="USD",
+        initial_funds:float=0.0,
         fee_model:FeeModel=ZeroFeeModel(),
         slippage_model=None,
         market_impact_model=None

@@ -33,10 +33,10 @@ class Portfolio(object):
     def __init__(
         self,
         start_dt,
-        starting_cash=0.0,
-        currency="USD",
-        portfolio_id=None,
-        name=None
+        starting_cash:float=0.0,
+        currency:str="USD",
+        portfolio_id:str=None,
+        name:str=None
     ):
         """
         Initialise the Portfolio object with a PositionHandler,
