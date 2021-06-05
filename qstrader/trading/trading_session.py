@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from build.lib.qstrader.broker.broker import Broker
 from qstrader.exchange.exchange import Exchange
 from qstrader.broker.fee_model.fee_model import FeeModel
 from qstrader.asset.universe.universe import Universe
@@ -13,21 +14,22 @@ class TradingSession(object):
     Interface to a live or backtested trading session.
     """
 
-    #__metaclass__ = ABCMeta
+    __metaclass__ = ABCMeta
 
     def __init__(self, 
         universe:Universe, 
         alpha_model:AlphaModel, 
-        risk_model:RiskModel, 
-        fee_model:FeeModel,
-        exchange:Exchange
+        risk_model:RiskModel,
+        broker:Broker 
+        #fee_model:FeeModel,
+        #exchange:Exchange
     ) -> None:
         self.universe = universe
         self.alpha_model = alpha_model
         self.risk_model = risk_model
-        self.fee_model = fee_model,
-        self.exchange = exchange
-
+        self.broker = broker
+        #self.fee_model = fee_model,
+        #self.exchange = exchange
         #self.data_handler = data_handler
 
 
