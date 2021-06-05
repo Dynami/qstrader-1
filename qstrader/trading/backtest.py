@@ -1,3 +1,4 @@
+from build.lib.qstrader.broker.broker import Broker
 from qstrader.asset.universe.universe import Universe
 from qstrader.alpha_model.alpha_model import AlphaModel
 from qstrader.risk_model.risk_model import RiskModel
@@ -77,43 +78,50 @@ class BacktestTradingSession(TradingSession):
         alpha_model:AlphaModel,
         risk_model:RiskModel=None,
         #signals=None,
-        initial_cash=1e6,
+        broker:Broker=None,
+        #initial_cash=1e6,
         rebalance='weekly',
         account_name=DEFAULT_ACCOUNT_NAME,
         portfolio_id=DEFAULT_PORTFOLIO_ID,
         portfolio_name=DEFAULT_PORTFOLIO_NAME,
         long_only:bool=False,
-        fee_model:FeeModel=ZeroFeeModel(),
+        #fee_model:FeeModel=ZeroFeeModel(),
         burn_in_dt:pd.Timestamp=None,
-        data_handler=None,
+        #data_handler=None,
         **kwargs
     ):
+        self.start_dt = start_dt
+        self.end_dt = end_dt
+
         super(BacktestTradingSession, self).__init__(
             universe=universe, 
             alpha_model=alpha_model, 
             risk_model=risk_model,
-            fee_model=fee_model,
-            exchange=SimulatedExchange(start_dt)
+            broker=broker
+            #fee_model=fee_model,
+            #exchange=SimulatedExchange(start_dt)
         )
 
-        self.start_dt = start_dt
-        self.end_dt = end_dt
+
+        
         #self.universe = universe
         #self.alpha_model = alpha_model
         #self.risk_model = risk_model
         self.signals = self.alpha_model.signals
-        self.initial_cash = initial_cash
+        #self.initial_cash = initial_cash
         self.rebalance = rebalance
         self.account_name = account_name
         self.portfolio_id = portfolio_id
         self.portfolio_name = portfolio_name
         self.long_only = long_only
-        self.fee_model = fee_model
+        #self.fee_model = fee_model
         self.burn_in_dt = burn_in_dt
 
+        self.broker.create_portfolio(portfolio_id, portfolio_name)
+        self.broker.subscribe_funds_to_portfolio(portfolio_id)
         #self.exchange = self._create_exchange()
-        self.data_handler = self._create_data_handler(data_handler)
-        self.broker = self._create_broker()
+        #self.data_handler = self._create_data_handler(data_handler)
+        #self.broker = self._create_broker()
         self.sim_engine = self._create_simulation_engine()
 
         if rebalance == 'weekly':
@@ -195,7 +203,7 @@ class BacktestTradingSession(TradingSession):
         )
         return data_handler
 
-    def _create_broker(self):
+    def ____create_broker(self):
         """
         Create the SimulatedBroker with an appropriate default
         portfolio identifiers.
@@ -286,7 +294,7 @@ class BacktestTradingSession(TradingSession):
                 self.universe,
                 self.broker,
                 self.portfolio_id,
-                self.data_handler,
+                #self.data_handler,
                 self.alpha_model,
                 self.risk_model,
                 long_only=self.long_only,
@@ -305,7 +313,7 @@ class BacktestTradingSession(TradingSession):
                 self.universe,
                 self.broker,
                 self.portfolio_id,
-                self.data_handler,
+                #self.data_handler,
                 self.alpha_model,
                 self.risk_model,
                 long_only=self.long_only,

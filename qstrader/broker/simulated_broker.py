@@ -50,22 +50,24 @@ class SimulatedBroker(Broker):
         start_dt:pd.Timestamp,
         exchange:Exchange,
         data_handler:DataHandler,
-        account_id:str=None,
+        account_id:str="000001",
         base_currency:str="USD",
-        initial_funds:float=0.0,
+        initial_funds:float=1e6,
         fee_model:FeeModel=ZeroFeeModel(),
         slippage_model=None,
         market_impact_model=None
     ):
+
+        super(SimulatedBroker, self).__init__(account_id=account_id, data_handler=data_handler, exchange=exchange, fee_model=self._set_fee_model(fee_model))
         self.start_dt = start_dt
-        self.exchange = exchange
-        self.data_handler = data_handler
+        #self.exchange = exchange
+        #self.data_handler = data_handler
         self.current_dt = start_dt
-        self.account_id = account_id
+        #self.account_id = account_id
 
         self.base_currency = self._set_base_currency(base_currency)
         self.initial_funds = self._set_initial_funds(initial_funds)
-        self.fee_model = self._set_fee_model(fee_model)
+        #self.fee_model = self._set_fee_model(fee_model)
         self.slippage_model = None  # TODO: Implement
         self.market_impact_model = None  # TODO: Implement
 
@@ -363,7 +365,7 @@ class SimulatedBroker(Broker):
             key=lambda port: port.portfolio_id
         )
 
-    def subscribe_funds_to_portfolio(self, portfolio_id, amount):
+    def subscribe_funds_to_portfolio(self, portfolio_id):
         """
         Subscribe funds to a particular sub-portfolio, assuming
         it exists and the cash amount is positive. Otherwise raise
@@ -376,31 +378,31 @@ class SimulatedBroker(Broker):
         amount : `float`
             The amount of cash to subscribe to the portfolio.
         """
-        if amount < 0.0:
+        if self.initial_funds < 0.0:
             raise ValueError(
                 "Cannot add negative amount: "
-                "%0.2f to a portfolio account." % amount
+                "%0.2f to a portfolio account." % self.initial_funds
             )
         if portfolio_id not in self.portfolios.keys():
             raise KeyError(
                 "Portfolio with ID '%s' does not exist. Cannot subscribe "
                 "funds to a non-existent portfolio." % portfolio_id
             )
-        if amount > self.cash_balances[self.base_currency]:
+        if self.initial_funds > self.cash_balances[self.base_currency]:
             raise ValueError(
                 "Not enough cash in the broker master account to "
                 "fund portfolio '%s'. %0.2f subscription amount exceeds "
                 "current broker account cash balance of %0.2f." % (
-                    portfolio_id, amount,
+                    portfolio_id, self.initial_funds,
                     self.cash_balances[self.base_currency]
                 )
             )
-        self.portfolios[portfolio_id].subscribe_funds(self.current_dt, amount)
-        self.cash_balances[self.base_currency] -= amount
+        self.portfolios[portfolio_id].subscribe_funds(self.current_dt, self.initial_funds)
+        self.cash_balances[self.base_currency] -= self.initial_funds
         if settings.PRINT_EVENTS:
             print(
                 '(%s) - subscription: %0.2f subscribed to portfolio "%s"' % (
-                    self.current_dt, amount, portfolio_id
+                    self.current_dt, self.initial_funds, portfolio_id
                 )
             )
 

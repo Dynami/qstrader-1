@@ -1,4 +1,8 @@
 from abc import ABCMeta, abstractmethod
+from build.lib.qstrader import data
+from qstrader.data.backtest_data_handler import DataHandler
+from build.lib.qstrader.broker.fee_model.fee_model import FeeModel
+from build.lib.qstrader.exchange.exchange import Exchange
 
 
 class Broker(object):
@@ -27,6 +31,19 @@ class Broker(object):
     """
 
     __metaclass__ = ABCMeta
+
+    def __init__(
+            self, 
+            account_id:str,
+            data_handler:DataHandler,
+            exchange:Exchange, 
+            fee_model:FeeModel
+        ) -> None:
+        self.data_handler = data_handler
+        self.account_id = account_id
+        self.exchange = exchange
+        self.fee_model = fee_model
+        
 
     @abstractmethod
     def subscribe_funds_to_account(self, amount):
@@ -71,7 +88,7 @@ class Broker(object):
         )
 
     @abstractmethod
-    def subscribe_funds_to_portfolio(self, portfolio_id, amount):
+    def subscribe_funds_to_portfolio(self, portfolio_id):
         raise NotImplementedError(
             "Should implement subscribe_funds_to_portfolio()"
         )
@@ -111,3 +128,27 @@ class Broker(object):
         raise NotImplementedError(
             "Should implement submit_order()"
         )
+
+    def _set_fee_model(self, fee_model:FeeModel):
+        """
+        Check and set the FeeModel instance for the broker.
+        The class default is no commission (ZeroFeeModel).
+
+        Parameters
+        ----------
+        fee_model : `FeeModel` (class)
+            The commission/fee model class provided to the Broker.
+
+        Returns
+        -------
+        `FeeModel` (instance)
+            The instantiated FeeModel class.
+        """
+        if issubclass(fee_model.__class__, FeeModel):
+            return fee_model
+        else:
+            raise TypeError(
+                "Provided fee model '%s' in SimulatedBroker is not a "
+                "FeeModel subclass, so could not create the "
+                "Broker entity." % fee_model.__class__
+            )

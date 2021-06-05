@@ -56,7 +56,7 @@ class QuantTradingSystem(object):
         universe:Universe,
         broker:Broker,
         broker_portfolio_id:str,
-        data_handler:DataHandler,
+        #data_handler:DataHandler,
         alpha_model:AlphaModel,
         *args,
         risk_model:RiskModel=None,
@@ -67,7 +67,7 @@ class QuantTradingSystem(object):
         self.universe = universe
         self.broker = broker
         self.broker_portfolio_id = broker_portfolio_id
-        self.data_handler = data_handler
+        self.data_handler = broker.data_handler
         self.alpha_model = alpha_model
         self.risk_model = risk_model
         self.long_only = long_only
