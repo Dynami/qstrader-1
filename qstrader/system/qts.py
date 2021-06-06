@@ -56,7 +56,6 @@ class QuantTradingSystem(object):
         universe:Universe,
         broker:Broker,
         broker_portfolio_id:str,
-        #data_handler:DataHandler,
         alpha_model:AlphaModel,
         *args,
         risk_model:RiskModel=None,

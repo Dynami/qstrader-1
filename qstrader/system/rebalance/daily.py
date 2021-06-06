@@ -26,13 +26,13 @@ class DailyRebalance(Rebalance):
     def __init__(
         self,
         start_date,
-        end_date,
+        #end_date,
         pre_market=False
     ):
         self.start_date = start_date
-        self.end_date = end_date
+        #self.end_date = end_date
         self.market_time = self._set_market_time(pre_market)
-        self.rebalances = self._generate_rebalances()
+        #self.rebalances = self._generate_rebalances()
 
     def _set_market_time(self, pre_market):
         """
@@ -52,24 +52,27 @@ class DailyRebalance(Rebalance):
         """
         return "14:30:00" if pre_market else "21:00:00"
 
-    def _generate_rebalances(self):
-        """
-        Output the rebalance timestamp list.
+    # def _generate_rebalances(self):
+    #     """
+    #     Output the rebalance timestamp list.
 
-        Returns
-        -------
-        `list[pd.Timestamp]`
-            The list of rebalance timestamps.
-        """
-        rebalance_dates = pd.bdate_range(
-            start=self.start_date, end=self.end_date,
-        )
+    #     Returns
+    #     -------
+    #     `list[pd.Timestamp]`
+    #         The list of rebalance timestamps.
+    #     """
+    #     rebalance_dates = pd.bdate_range(
+    #         start=self.start_date, end=self.end_date,
+    #     )
 
-        rebalance_times = [
-            pd.Timestamp(
-                "%s %s" % (date, self.market_time), tz=pytz.utc
-            )
-            for date in rebalance_dates
-        ]
+    #     rebalance_times = [
+    #         pd.Timestamp(
+    #             "%s %s" % (date, self.market_time), tz=pytz.utc
+    #         )
+    #         for date in rebalance_dates
+    #     ]
 
-        return rebalance_times
+    #     return rebalance_times
+
+    def is_rebalance_event(self, dt):
+        return dt >= self.start_date and self.is_market_time(self.market_time, dt)

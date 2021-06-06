@@ -77,64 +77,40 @@ class BacktestTradingSession(TradingSession):
         universe:Universe,
         alpha_model:AlphaModel,
         risk_model:RiskModel=None,
-        #signals=None,
         broker:Broker=None,
-        #initial_cash=1e6,
-        rebalance='weekly',
-        account_name=DEFAULT_ACCOUNT_NAME,
-        portfolio_id=DEFAULT_PORTFOLIO_ID,
-        portfolio_name=DEFAULT_PORTFOLIO_NAME,
+        rebalance:str='weekly',
+        rebalance_weekday:str=None,
+        account_name:str=DEFAULT_ACCOUNT_NAME,
+        portfolio_id:str=DEFAULT_PORTFOLIO_ID,
+        portfolio_name:str=DEFAULT_PORTFOLIO_NAME,
         long_only:bool=False,
-        #fee_model:FeeModel=ZeroFeeModel(),
         burn_in_dt:pd.Timestamp=None,
-        #data_handler=None,
         **kwargs
     ):
-        self.start_dt = start_dt
+        #self.start_dt = start_dt
         self.end_dt = end_dt
 
         super(BacktestTradingSession, self).__init__(
+            start_dt=start_dt,
             universe=universe, 
             alpha_model=alpha_model, 
             risk_model=risk_model,
-            broker=broker
-            #fee_model=fee_model,
-            #exchange=SimulatedExchange(start_dt)
+            broker=broker,
+            portfolio_id=portfolio_id,
+            rebalance=rebalance,
+            rebalance_weekday=rebalance_weekday,
+            long_only=long_only
+            
         )
 
-
-        
-        #self.universe = universe
-        #self.alpha_model = alpha_model
-        #self.risk_model = risk_model
         self.signals = self.alpha_model.signals
-        #self.initial_cash = initial_cash
-        self.rebalance = rebalance
         self.account_name = account_name
-        self.portfolio_id = portfolio_id
         self.portfolio_name = portfolio_name
-        self.long_only = long_only
-        #self.fee_model = fee_model
         self.burn_in_dt = burn_in_dt
 
         self.broker.create_portfolio(portfolio_id, portfolio_name)
         self.broker.subscribe_funds_to_portfolio(portfolio_id)
-        #self.exchange = self._create_exchange()
-        #self.data_handler = self._create_data_handler(data_handler)
-        #self.broker = self._create_broker()
         self.sim_engine = self._create_simulation_engine()
-
-        if rebalance == 'weekly':
-            if 'rebalance_weekday' in kwargs:
-                self.rebalance_weekday = kwargs['rebalance_weekday']
-            else:
-                raise ValueError(
-                    "Rebalance frequency was set to 'weekly' but no specific "
-                    "weekday was provided. Try adding the 'rebalance_weekday' "
-                    "keyword argument to the instantiation of "
-                    "BacktestTradingSession, e.g. with 'WED'."
-                )
-        self.rebalance_schedule = self._create_rebalance_event_times()
 
         self.qts = self._create_quant_trading_system(**kwargs)
         self.equity_curve = []
@@ -155,7 +131,8 @@ class BacktestTradingSession(TradingSession):
         `Boolean`
             Whether the timestamp is part of the rebalance schedule.
         """
-        return dt in self.rebalance_schedule
+        return self.rebalance_schedule.is_rebalance_event(dt)
+        #return dt in self.rebalance_schedule
 
     
 
@@ -241,7 +218,7 @@ class BacktestTradingSession(TradingSession):
             self.start_dt, self.end_dt, pre_market=False, post_market=False
         )
 
-    def _create_rebalance_event_times(self):
+    def ___create_rebalance_event_times(self):
         """
         Creates the list of rebalance timestamps used to determine when
         to execute the quant trading strategy throughout the backtest.
@@ -269,7 +246,7 @@ class BacktestTradingSession(TradingSession):
             )
         return rebalancer.rebalances
 
-    def _create_quant_trading_system(self, **kwargs):
+    def ____create_quant_trading_system(self, **kwargs):
         """
         Creates the quantitative trading system with the provided
         alpha model.

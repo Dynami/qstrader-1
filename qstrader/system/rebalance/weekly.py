@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import pytz
 
 from qstrader.system.rebalance.rebalance import Rebalance
@@ -28,15 +29,16 @@ class WeeklyRebalance(Rebalance):
     def __init__(
         self,
         start_date,
-        end_date,
+        #end_date,
         weekday,
         pre_market=False
     ):
+        self.weekdays = np.array(("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"))
         self.weekday = self._set_weekday(weekday)
         self.start_date = start_date
-        self.end_date = end_date
-        self.pre_market_time = self._set_market_time(pre_market)
-        self.rebalances = self._generate_rebalances()
+        #self.end_date = end_date
+        self.pre_market_time = self.set_market_time(pre_market)
+        #self.rebalances = self._generate_rebalances()
 
     def _set_weekday(self, weekday):
         """
@@ -55,53 +57,42 @@ class WeeklyRebalance(Rebalance):
             The uppercase three-letter string representation of the
             weekday to rebalance on once per week.
         """
-        weekdays = ("MON", "TUE", "WED", "THU", "FRI")
-        if weekday.upper() not in weekdays:
+        weekday = weekday.upper()
+        if weekday not in self.weekdays:
             raise ValueError(
                 "Provided weekday keyword '%s' is not recognised "
                 "or not a valid weekday." % weekday
             )
-        else:
-            return weekday.upper()
 
-    def _set_market_time(self, pre_market):
-        """
-        Determines whether to use market open or market close
-        as the rebalance time.
+        result = np.where(self.weekdays == weekday)
+        return result[0][0]
 
-        Parameters
-        ----------
-        pre_market : `Boolean`
-            Whether to use market open or market close
-            as the rebalance time.
 
-        Returns
-        -------
-        `str`
-            The string representation of the market time.
-        """
-        return "14:30:00" if pre_market else "21:00:00"
 
-    def _generate_rebalances(self):
-        """
-        Output the rebalance timestamp list.
+    # def _generate_rebalances(self):
+    #     """
+    #     Output the rebalance timestamp list.
 
-        Returns
-        -------
-        `list[pd.Timestamp]`
-            The list of rebalance timestamps.
-        """
-        rebalance_dates = pd.date_range(
-            start=self.start_date,
-            end=self.end_date,
-            freq='W-%s' % self.weekday
-        )
+    #     Returns
+    #     -------
+    #     `list[pd.Timestamp]`
+    #         The list of rebalance timestamps.
+    #     """
+    #     rebalance_dates = pd.date_range(
+    #         start=self.start_date,
+    #         end=self.end_date,
+    #         freq='W-%s' % self.weekday
+    #     )
 
-        rebalance_times = [
-            pd.Timestamp(
-                "%s %s" % (date, self.pre_market_time), tz=pytz.utc
-            )
-            for date in rebalance_dates
-        ]
+    #     rebalance_times = [
+    #         pd.Timestamp(
+    #             "%s %s" % (date, self.pre_market_time), tz=pytz.utc
+    #         )
+    #         for date in rebalance_dates
+    #     ]
 
-        return rebalance_times
+    #     return rebalance_times
+
+    def is_rebalance_event(self, dt) -> bool:
+        return dt >= self.start_date and self.weekday == dt.day_of_week and self.is_market_time(self.pre_market_time, dt)
+    

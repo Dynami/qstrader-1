@@ -15,4 +15,8 @@ class BuyAndHoldRebalance(Rebalance):
 
     def __init__(self, start_dt):
         self.start_dt = start_dt
-        self.rebalances = [start_dt]
+        self.pre_market_time = self.set_market_time(False)
+        #self.rebalances = [start_dt]
+
+    def is_rebalance_event(self, dt):
+        return dt >= self.start_dt and self.is_market_time(self.pre_market_time, dt)

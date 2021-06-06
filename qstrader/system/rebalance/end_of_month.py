@@ -27,51 +27,40 @@ class EndOfMonthRebalance(Rebalance):
     def __init__(
         self,
         start_dt,
-        end_dt,
+        #end_dt,
         pre_market=False
     ):
         self.start_dt = start_dt
-        self.end_dt = end_dt
-        self.market_time = self._set_market_time(pre_market)
-        self.rebalances = self._generate_rebalances()
+        #self.end_dt = end_dt
+        self.market_time = self.set_market_time(pre_market)
+        #self.rebalances = self._generate_rebalances()
 
-    def _set_market_time(self, pre_market):
-        """
-        Determines whether to use market open or market close
-        as the rebalance time.
+    
+    def is_rebalance_event(self, dt):
+        return dt >= self.start_dt and dt.is_month_end and self.is_market_time(self.market_time, dt)
 
-        Parameters
-        ----------
-        pre_market : `Boolean`
-            Whether the rebalance is carried out at market open/close.
 
-        Returns
-        -------
-        `str`
-            The time string used for Pandas timestamp construction.
-        """
-        return "14:30:00" if pre_market else "21:00:00"
+    
+    # def _generate_rebalances(self):
+    #     """
+    #     Utilise the Pandas date_range method to create the appropriate
+    #     list of rebalance timestamps.
 
-    def _generate_rebalances(self):
-        """
-        Utilise the Pandas date_range method to create the appropriate
-        list of rebalance timestamps.
+    #     Returns
+    #     -------
+    #     `List[pd.Timestamp]`
+    #         The list of rebalance timestamps.
+    #     """
+    #     rebalance_dates = pd.date_range(
+    #         start=self.start_dt,
+    #         end=self.end_dt,
+    #         freq='BM'
+    #     )
 
-        Returns
-        -------
-        `List[pd.Timestamp]`
-            The list of rebalance timestamps.
-        """
-        rebalance_dates = pd.date_range(
-            start=self.start_dt,
-            end=self.end_dt,
-            freq='BM'
-        )
-
-        rebalance_times = [
-            pd.Timestamp(
-                "%s %s" % (date, self.market_time), tz=pytz.utc
-            )
-            for date in rebalance_dates
-        ]
-        return rebalance_times
+    #     rebalance_times = [
+    #         pd.Timestamp(
+    #             "%s %s" % (date, self.market_time), tz=pytz.utc
+    #         )
+    #         for date in rebalance_dates
+    #     ]
+    #     return rebalance_times
