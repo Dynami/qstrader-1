@@ -270,11 +270,14 @@ class PortfolioConstructionModel(object):
 
         # If a risk model is present use it to potentially
         # override the alpha model weights
+        #print('pcm.py #1', weights)
         if self.risk_model:
-            weights = self.risk_model(dt, weights)
+            weights = self.risk_model(dt, weights, self.broker.data_handler)
 
+        #print('pcm.py #2', weights)
         # Run the portfolio optimisation
         optimised_weights = self.optimiser(dt, initial_weights=weights)
+        #print('pcm.py #3', optimised_weights)
 
         # Ensure any Assets in the Broker Portfolio are sold out if
         # they are not specifically referenced on the optimised weights
@@ -283,6 +286,7 @@ class PortfolioConstructionModel(object):
         full_weights = self._create_full_asset_weight_vector(
             full_zero_weights, optimised_weights
         )
+        #print('pcm.py #4', full_weights)
         if settings.PRINT_EVENTS:
             print(
                 "(%s) - target weights: %s" % (dt, full_weights)

@@ -180,27 +180,7 @@ class BacktestTradingSession(TradingSession):
         )
         return data_handler
 
-    def ____create_broker(self):
-        """
-        Create the SimulatedBroker with an appropriate default
-        portfolio identifiers.
-
-        Returns
-        -------
-        `SimulatedBroker`
-            The simulated broker instance.
-        """
-        broker = SimulatedBroker(
-            self.start_dt,
-            self.exchange,
-            self.data_handler,
-            account_id=self.account_name,
-            initial_funds=self.initial_cash,
-            fee_model=self.fee_model
-        )
-        broker.create_portfolio(self.portfolio_id, self.portfolio_name)
-        broker.subscribe_funds_to_portfolio(self.portfolio_id, self.initial_cash)
-        return broker
+    
 
     def _create_simulation_engine(self):
         """
@@ -246,7 +226,7 @@ class BacktestTradingSession(TradingSession):
             )
         return rebalancer.rebalances
 
-    def ____create_quant_trading_system(self, **kwargs):
+    def _create_quant_trading_system(self, **kwargs):
         """
         Creates the quantitative trading system with the provided
         alpha model.
@@ -259,6 +239,7 @@ class BacktestTradingSession(TradingSession):
         `QuantTradingSystem`
             The quantitative trading system.
         """
+        #print('backtest.py', self.risk_model)
         if self.long_only:
             if 'cash_buffer_percentage' not in kwargs:
                 raise ValueError(
@@ -268,12 +249,12 @@ class BacktestTradingSession(TradingSession):
             cash_buffer_percentage = kwargs['cash_buffer_percentage']
 
             qts = QuantTradingSystem(
-                self.universe,
-                self.broker,
-                self.portfolio_id,
+                universe=self.universe,
+                broker=self.broker,
+                broker_portfolio_id=self.portfolio_id,
                 #self.data_handler,
-                self.alpha_model,
-                self.risk_model,
+                alpha_model=self.alpha_model,
+                risk_model=self.risk_model,
                 long_only=self.long_only,
                 cash_buffer_percentage=cash_buffer_percentage,
                 submit_orders=True
@@ -287,12 +268,12 @@ class BacktestTradingSession(TradingSession):
             gross_leverage = kwargs['gross_leverage']
 
             qts = QuantTradingSystem(
-                self.universe,
-                self.broker,
-                self.portfolio_id,
+                universe=self.universe,
+                broker=self.broker,
+                broker_portfolio_id=self.portfolio_id,
                 #self.data_handler,
-                self.alpha_model,
-                self.risk_model,
+                alpha_model=self.alpha_model,
+                risk_model=self.risk_model,
                 long_only=self.long_only,
                 gross_leverage=gross_leverage,
                 submit_orders=True

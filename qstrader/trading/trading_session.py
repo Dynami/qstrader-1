@@ -31,7 +31,8 @@ class TradingSession(object):
         portfolio_id:str,
         long_only:bool,
         rebalance:str,
-        rebalance_weekday:str=None 
+        rebalance_weekday:str=None,
+        **kwargs
         
     ) -> None:
         self.start_dt = start_dt
@@ -53,6 +54,7 @@ class TradingSession(object):
             )
         
         self.rebalance_schedule = self._create_rebalance_event_times()
+        #self.qst = self._create_quant_trading_system(**kwargs)
         
     
     @abstractmethod
@@ -61,7 +63,7 @@ class TradingSession(object):
             "Should implement run()"
         )
 
-    def _create_quant_trading_system(self, **kwargs):
+    def ___create_quant_trading_system(self, **kwargs):
         """
         Creates the quantitative trading system with the provided
         alpha model.
@@ -81,7 +83,7 @@ class TradingSession(object):
                     'but no cash buffer percentage supplied.'
                 )
             cash_buffer_percentage = kwargs['cash_buffer_percentage']
-
+            print('trading_session.py', self.risk_model)
             qts = QuantTradingSystem(
                 self.universe,
                 self.broker,

@@ -1,21 +1,59 @@
+from abc import ABCMeta, abstractmethod
+from qstrader.data.daily_bar_csv import DataSource
 from qstrader.asset.universe.universe import Universe
 import numpy as np
 
-class DataHandler(object):
-    def __init__(self) -> None:
-        super().__init__()
 
-class BacktestDataHandler(object):
+class DataHandler(object):
+    __metaclass__ = ABCMeta
+
+
+    def __init__(self, universe:Universe, data_sources:DataSource=[]) -> None:
+        self.universe = universe
+        self.data_sources = data_sources
+
+    @abstractmethod
+    def get_asset_latest_bid_price(self, dt, asset_symbol):
+        raise NotImplementedError(
+            "Should implement get_asset_latest_bid_price()"
+        )
+    
+    @abstractmethod
+    def get_asset_latest_ask_price(self, dt, asset_symbol):
+        raise NotImplementedError(
+            "Should implement get_asset_latest_ask_price()"
+        )
+
+    @abstractmethod
+    def get_asset_latest_ask_price(self, dt, asset_symbol):
+        raise NotImplementedError(
+            "Should implement get_asset_latest_ask_price()"
+        )
+
+    @abstractmethod
+    def get_asset_latest_bid_ask_price(self, dt, asset_symbol):
+        raise NotImplementedError(
+            "Should implement get_asset_latest_bid_ask_price()"
+        )
+
+    @abstractmethod
+    def get_assets_historical_range_close_price(self, start_dt, end_dt, asset_symbols, adjusted=False):
+        raise NotImplementedError(
+            "Should implement get_assets_historical_range_close_price()"
+        )
+
+class BacktestDataHandler(DataHandler):
     """
     """
 
     def __init__(
         self,
         universe:Universe,
-        data_sources:DataHandler=None
+        data_sources:DataSource=None
     ):
-        self.universe = universe
-        self.data_sources = data_sources
+        super(BacktestDataHandler, self).__init__(universe, data_sources)
+        #self.universe = universe
+        #self.data_sources = data_sources
 
     def get_asset_latest_bid_price(self, dt, asset_symbol):
         """

@@ -131,7 +131,7 @@ class QuantTradingSystem(object):
         optimiser = FixedWeightPortfolioOptimiser(
             data_handler=self.data_handler
         )
-
+        #print('qst.py', self.risk_model)
         # Generate the portfolio construction
         self.portfolio_construction_model = PortfolioConstructionModel(
             self.broker,

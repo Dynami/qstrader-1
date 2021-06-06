@@ -1,4 +1,5 @@
 from abc import ABCMeta, abstractmethod
+from qstrader.data.backtest_data_handler import DataHandler
 
 
 class RiskModel(object):
@@ -19,7 +20,7 @@ class RiskModel(object):
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def __call__(self, dt, weights):
+    def __call__(self, dt, weights, data_handler:DataHandler=None):
         raise NotImplementedError(
             "Should implement __call__()"
         )
